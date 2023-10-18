@@ -1,0 +1,39 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"  >
+<head> <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<nav>
+    <div>
+        <h2>Akademia</h2>
+    </div>
+    <ul >
+        <li>
+            <a th:href="@{/car}">Cars</a>
+        </li>
+        <li>
+            <a th:href="@{/engine}">Engines</a>
+        </li>
+        <li>
+            <a th:href="@{/wheels}" >Wheels</a>
+        </li>
+    </ul>
+</nav>
+<div >
+    <h2>Engine Registration</h2>
+
+    <form th:action="@{/engine/form}" th:method="post" th:object="${engineForm}">
+        <input th:field="*{id}" type="hidden" th:value="*{id}"/>
+        <input th:field="*{type}" type="text" th:value="*{type}" placeholder="Engine Type "/>
+        <span th:if="${#fields.hasErrors('type')}" th:errors="*{type}">Type Error</span>
+        <input th:field="*{power}" type="number" th:value="*{power}" accept=""  placeholder="Engine Power" />
+        <span th:if="${#fields.hasErrors('power')}" th:errors="*{power}">Power Error</span>
+        <div>
+            <button type="submit"  >Submit</button>
+        </div>
+    </form>
+    <!-- Code block form end -->
+</div>
+</body>

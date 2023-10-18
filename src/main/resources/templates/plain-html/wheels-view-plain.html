@@ -1,0 +1,67 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"  >
+<head> <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<nav>
+    <div>
+        <h2>Akademia</h2>
+    </div>
+    <ul >
+        <li>
+            <a th:href="@{car}">Cars</a>
+        </li>
+        <li>
+            <a th:href="@{engine}">Engines</a>
+        </li>
+        <li>
+            <a th:href="@{wheels}" >Wheels</a>
+        </li>
+    </ul>
+</nav>
+<div >
+
+    <div >
+        <h2 >Wheels</h2>
+        <button>
+            <a th:href="@{wheels/form}">Add Wheel</a>
+        </button>
+
+    </div>
+</div>
+
+<table>
+
+    <thead >
+    <tr>
+        <th >
+            ID
+        </th>
+        <th >
+            Wheel Size
+        </th>
+        <th >
+            Wheel Type
+        </th>
+        <th >
+           Edit
+        </th>
+        <th>
+            Delete
+        </th>
+    </tr>
+    </thead>
+    <tbody> <tbody>
+<tr th:each="wheels : ${wheelsDTOS}">
+    <th th:text="${wheels.id}"></th>
+    <td th:text="${wheels.type}"></td>
+    <td th:text="${wheels.size}"></td>
+    <td><a th:href="@{/wheels/form?wheelsId={wheelsId}(wheelsId=${wheels.id})}">Edit</a></td>
+    <td><a th:href="@{/wheels/delete/{id}(id=${wheels.id})}" onclick="return confirm('Are you sure you want to delete this wheel?')">Delete</a></td>
+</tr>
+</tbody>
+    </tbody>
+</table>
+</body>

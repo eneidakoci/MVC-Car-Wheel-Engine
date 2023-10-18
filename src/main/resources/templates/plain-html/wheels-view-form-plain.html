@@ -1,0 +1,36 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"  >
+<head> <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<nav>
+    <div>
+        <h2>Akademia</h2>
+    </div>
+    <ul >
+        <li>
+            <a th:href="@{/car}">Cars</a>
+        </li>
+        <li>
+            <a th:href="@{/engine}">Engines</a>
+        </li>
+        <li>
+            <a th:href="@{/wheels}" >Wheels</a>
+        </li>
+    </ul>
+</nav>
+<div >
+    <h2>Add Wheels</h2>
+
+    <form th:action="@{/wheels/form}" method="post" th:object="${wheelsForm}">
+        <input type="hidden" th:field="*{id}" th:value="*{id}"/>
+        <input type="text" th:field="*{size}" th:value="*{size}" placeholder="Enter wheel size" />
+        <span th:if="${#fields.hasErrors('size')}" th:errors="*{size}">Size Error</span>
+        <input type="text" th:field="*{type}" th:value="*{type}" placeholder="Enter wheel type" />
+        <span th:if="${#fields.hasErrors('type')}" th:errors="*{type}">Type Error</span>
+        <button type="submit">Save</button>
+    </form>
+</div>
+</body>
