@@ -12,7 +12,7 @@ public class WheelsMapper {
         return wheels;
     }
     public static WheelsDTO toDto(WheelsEntity engineEntity){
-        return new WheelsDTO(engineEntity.getId(), engineEntity.getType(), engineEntity.getSize());
+        return new WheelsDTO(engineEntity.getId(), engineEntity.getSize(), engineEntity.getType());
     }
     public static WheelsEntity toEntity(WheelsDTO wheelsDTO){
         WheelsEntity wheels = new WheelsEntity();

@@ -2,62 +2,116 @@ package com.detyra.mvc.controller;
 
 import com.detyra.mvc.domain.dto.WheelsDTO;
 import com.detyra.mvc.domain.dto.WheelsRequest;
+import com.detyra.mvc.domain.entity.WheelsEntity;
+import com.detyra.mvc.domain.mappers.WheelsMapper;
+import com.detyra.mvc.filter.Filter;
 import com.detyra.mvc.service.WheelsService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
+//
+//field value operator
+//        mos e bej me criteria,BEJE me entity manager me sql
+//        kjo eshte nje liste, me objekt brenda
+//        base query: smth thats always true, psh where 1=1
+//        [
+//        {
+//        "field:""type",
+//        "value": "V8",
+//        "operator":"<" ose =... ose equals,
+//        "sort" : "asc/desc",
+//        "sortField" : "id",
+//        "page" : 1,
+//        "size" : 10
+//        }
+//        ]
 
-@Controller
+@RestController
 @RequestMapping("/wheels")
 public class WheelsController {
 
     @Autowired
     private WheelsService wheelsService;
-    private static final String TEMPLATE_LOCATION = "plain-html/";
+
+    @GetMapping("/{wheelId})")
+    public ResponseEntity<WheelsDTO> findById(@PathVariable Integer wheelId) {
+        return ResponseEntity.ok(wheelsService.findById(wheelId));
+    }
+
+    @PostMapping
+    public Boolean save(@RequestBody WheelsRequest wheelsRequest) {
+        wheelsService.save(wheelsRequest);
+        return true;
+    }
 
     @GetMapping
-    public String getAllWheels(Model model) {
-        List<WheelsDTO> wheelsDTOS = wheelsService.findAll();
-        model.addAttribute("wheelsDTOS", wheelsDTOS);
-        return TEMPLATE_LOCATION.concat("wheels-view-plain");
+    public ResponseEntity<List<WheelsDTO>> getAllWheels(@RequestParam(required = false) String type, @RequestParam(required = false) String size){
+        Filter typeFilter = new Filter("type", type, "=");
+        Filter sizeFilter = new Filter("size", size, "=");
+        return ResponseEntity.ok(wheelsService.findAll(typeFilter, sizeFilter));
     }
 
-    @GetMapping("/form")
-    public String addOrUpdateWheel(Model model, @RequestParam(required = false) Integer wheelsId) {
-        if(wheelsId == null){
-            model.addAttribute("title", "Wheel Registration");
-            model.addAttribute("wheelsForm", new WheelsDTO());
-        } else {
-            model.addAttribute("title", "Wheel Update");
-            model.addAttribute("wheelsForm", wheelsService.findById(wheelsId));
-        }
-        return TEMPLATE_LOCATION.concat("wheels-view-form-plain");
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<WheelsDTO> deleteWheel(@PathVariable Integer id) {
+        return ResponseEntity.ok(wheelsService.delete(id));
     }
 
-    @PostMapping("/form")
-    public String addOrUpdateWheel(@ModelAttribute(name = "wheelsForm") @Valid WheelsDTO wheelsDTO, BindingResult result) {
-        if(result.hasErrors()){
-            return TEMPLATE_LOCATION.concat("wheels-view-form-plain");
-        }
-        if (wheelsDTO.getId() == null) {
-            wheelsService.save(new WheelsRequest(wheelsDTO.getSize(), wheelsDTO.getType()));
-        } else {
-            wheelsService.update(wheelsDTO);
-        }
-        return "redirect:/wheels";
+    /*
+    Takes a WheelsRequest object and turns it into a WheelsEntity object which be later turned to a WheelsDTO object.
+     */
+    @PutMapping("/update/{id}")
+    public ResponseEntity<WheelsDTO> updateWheel(@PathVariable Integer id, @RequestBody WheelsRequest wheelsRequest) {
+        WheelsEntity wheelsEntity = WheelsMapper.toEntity(wheelsRequest);
+        WheelsDTO wheelsDTO = WheelsMapper.toDto(wheelsEntity);
+        wheelsDTO.setId(id);
+        return wheelsService.update(wheelsDTO) != null ? ResponseEntity.noContent().build() : ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteWheel(@PathVariable Integer id) {
-        wheelsService.delete(id);
-        return "redirect:/wheels";
-    }
 }
+/*
+ *********************************************MVC***********************************************************
+ */
+//    private static final String TEMPLATE_LOCATION = "plain-html/";
+//
+//    @GetMapping
+//    public String getAllWheels(Model model) {
+//        List<WheelsDTO> wheelsDTOS = wheelsService.findAll();
+//        model.addAttribute("wheelsDTOS", wheelsDTOS);
+//        return TEMPLATE_LOCATION.concat("wheels-view-plain");
+//    }
+//
+//    @GetMapping("/form")
+//    public String addOrUpdateWheel(Model model, @RequestParam(required = false) Integer wheelsId) {
+//        if(wheelsId == null){
+//            model.addAttribute("title", "Wheel Registration");
+//            model.addAttribute("wheelsForm", new WheelsDTO());
+//        } else {
+//            model.addAttribute("title", "Wheel Update");
+//            model.addAttribute("wheelsForm", wheelsService.findById(wheelsId));
+//        }
+//        return TEMPLATE_LOCATION.concat("wheels-view-form-plain");
+//    }
+//
+//    @PostMapping("/form")
+//    public String addOrUpdateWheel(@ModelAttribute(name = "wheelsForm") @Valid WheelsDTO wheelsDTO, BindingResult result) {
+//        if(result.hasErrors()){
+//            return TEMPLATE_LOCATION.concat("wheels-view-form-plain");
+//        }
+//        if (wheelsDTO.getId() == null) {
+//            wheelsService.save(new WheelsRequest(wheelsDTO.getSize(), wheelsDTO.getType()));
+//        } else {
+//            wheelsService.update(wheelsDTO);
+//        }
+//        return "redirect:/wheels";
+//    }
+//
+//    @GetMapping("/delete/{id}")
+//    public String deleteWheel(@PathVariable Integer id) {
+//        wheelsService.delete(id);
+//        return "redirect:/wheels";
+//    }
+//}

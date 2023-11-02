@@ -1,6 +1,7 @@
 package com.detyra.mvc.repository;
 import com.detyra.mvc.domain.entity.EngineEntity;
 import com.detyra.mvc.domain.entity.WheelsEntity;
+import com.detyra.mvc.filter.Filter;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,5 +12,5 @@ public interface WheelsRepository {
     WheelsEntity update(WheelsEntity wheels);
     WheelsEntity findById(Integer id);
     WheelsEntity delete(WheelsEntity wheels);
-    List<WheelsEntity> findAll();
+    List<WheelsEntity> findAll(Filter...filters);
 }

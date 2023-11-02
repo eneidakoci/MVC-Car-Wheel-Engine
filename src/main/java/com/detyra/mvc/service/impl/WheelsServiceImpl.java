@@ -4,6 +4,7 @@ import com.detyra.mvc.domain.dto.WheelsDTO;
 import com.detyra.mvc.domain.dto.WheelsRequest;
 import com.detyra.mvc.domain.entity.WheelsEntity;
 import com.detyra.mvc.domain.mappers.WheelsMapper;
+import com.detyra.mvc.filter.Filter;
 import com.detyra.mvc.repository.WheelsRepository;
 import com.detyra.mvc.service.WheelsService;
 import jakarta.transaction.Transactional;
@@ -43,8 +44,8 @@ public class WheelsServiceImpl implements WheelsService {
     }
 
     @Override
-    public List<WheelsDTO> findAll() {
-        List<WheelsEntity> wheels = wheelsRepository.findAll();
+    public List<WheelsDTO> findAll(Filter...filters) {
+        List<WheelsEntity> wheels = wheelsRepository.findAll(filters);
         return wheels.stream()
                 .map(WheelsMapper::toDto)
                 .collect(Collectors.toList());

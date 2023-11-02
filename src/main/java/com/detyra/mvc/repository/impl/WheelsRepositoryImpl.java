@@ -1,6 +1,7 @@
 package com.detyra.mvc.repository.impl;
 
 import com.detyra.mvc.domain.entity.WheelsEntity;
+import com.detyra.mvc.filter.Filter;
 import com.detyra.mvc.repository.WheelsRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -11,8 +12,8 @@ import java.util.List;
 @Repository
 public class WheelsRepositoryImpl implements WheelsRepository {
 
-    private static final String FIND_QUERY="select w from WheelsEntity w where w.id=:id";
-    private static final String FIND_ALL_QUERY = "SELECT w FROM WheelsEntity w";
+    private static final String FIND_QUERY = "select w from WheelsEntity w where w.id=:id";
+    //private static String FIND_ALL_QUERY = "SELECT * FROM wheels WHERE 1=1";
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -32,7 +33,7 @@ public class WheelsRepositoryImpl implements WheelsRepository {
     @Override
     public WheelsEntity findById(Integer id) {
         return entityManager.createQuery(FIND_QUERY, WheelsEntity.class)
-                .setParameter("id",id)
+                .setParameter("id", id)
                 .getSingleResult();
     }
 
@@ -42,9 +43,18 @@ public class WheelsRepositoryImpl implements WheelsRepository {
         return wheels;
     }
 
-    @Override
-    public List<WheelsEntity> findAll() {
-        return entityManager.createQuery(FIND_ALL_QUERY, WheelsEntity.class)
+        @Override
+    public List<WheelsEntity> findAll(Filter... filters) {
+    String FIND_ALL_QUERY = "SELECT * FROM wheels WHERE 1=1";
+        String filterQuery = "";
+        for (Filter filter : filters) {
+            if (filter.getValue() != null) {
+                filterQuery += " AND " + filter.getField() + " " + filter.getOperator() + " '" + filter.getValue() + "' ";
+            }
+        }
+        FIND_ALL_QUERY += filterQuery;
+        return entityManager.createNativeQuery(FIND_ALL_QUERY, WheelsEntity.class)
                 .getResultList();
     }
+
 }
