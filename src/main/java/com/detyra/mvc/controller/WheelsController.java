@@ -10,25 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-
-//
-//field value operator
-//        mos e bej me criteria,BEJE me entity manager me sql
-//        kjo eshte nje liste, me objekt brenda
-//        base query: smth thats always true, psh where 1=1
-//        [
-//        {
-//        "field:""type",
-//        "value": "V8",
-//        "operator":"<" ose =... ose equals,
-//        "sort" : "asc/desc",
-//        "sortField" : "id",
-//        "page" : 1,
-//        "size" : 10
-//        }
-//        ]
 
 @RestController
 @RequestMapping("/wheels")
@@ -48,8 +30,9 @@ public class WheelsController {
         return true;
     }
 
+    /*working */
     @GetMapping
-    public ResponseEntity<List<WheelsDTO>> getAllWheels(@RequestParam(required = false) String type, @RequestParam(required = false) String size){
+    public ResponseEntity<List<WheelsDTO>> getAllWheels(@RequestParam(required = false) String type, @RequestParam(required = false) String size) {
         Filter typeFilter = new Filter("type", type, "=");
         Filter sizeFilter = new Filter("size", size, "=");
         return ResponseEntity.ok(wheelsService.findAll(typeFilter, sizeFilter));
