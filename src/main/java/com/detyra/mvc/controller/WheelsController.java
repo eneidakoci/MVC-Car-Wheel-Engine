@@ -1,5 +1,6 @@
 package com.detyra.mvc.controller;
 
+import com.detyra.mvc.CustomResponse;
 import com.detyra.mvc.domain.dto.WheelsDTO;
 import com.detyra.mvc.domain.dto.WheelsRequest;
 import com.detyra.mvc.domain.entity.WheelsEntity;
@@ -12,23 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-//
-//field value operator
-//        mos e bej me criteria,BEJE me entity manager me sql
-//        kjo eshte nje liste, me objekt brenda
-//        base query: smth thats always true, psh where 1=1
-//        [
-//        {
-//        "field:""type",
-//        "value": "V8",
-//        "operator":"<" ose =... ose equals,
-//        "sort" : "asc/desc",
-//        "sortField" : "id",
-//        "page" : 1,
-//        "size" : 10
-//        }
-//        ]
 
 @RestController
 @RequestMapping("/wheels")
@@ -48,11 +32,43 @@ public class WheelsController {
         return true;
     }
 
+    /*working */
+//    @GetMapping
+//    public ResponseEntity<List<WheelsDTO>> getAllWheels(@RequestParam(required = false) String type, @RequestParam(required = false) String size) {
+//        Filter typeFilter = new Filter("type", type, "=");
+//        Filter sizeFilter = new Filter("size", size, "=");
+//        return ResponseEntity.ok(wheelsService.findAll(typeFilter, sizeFilter));
+//    }
     @GetMapping
-    public ResponseEntity<List<WheelsDTO>> getAllWheels(@RequestParam(required = false) String type, @RequestParam(required = false) String size){
+    public ResponseEntity<CustomResponse<List<WheelsDTO>>> getAllWheels(@RequestParam(required = false) String type, @RequestParam(required = false) String size) {
+        boolean fieldsExist = checkFieldsExist(WheelsEntity.class, "size", "type");
+
+        if (!fieldsExist || (size == null && type == null)) {
+            CustomResponse<List<WheelsDTO>> response = new CustomResponse<>("The fields that you entered do not exist in the class.", new ArrayList<>());
+            return ResponseEntity.ok(response);
+        }
+
         Filter typeFilter = new Filter("type", type, "=");
         Filter sizeFilter = new Filter("size", size, "=");
-        return ResponseEntity.ok(wheelsService.findAll(typeFilter, sizeFilter));
+
+        List<WheelsDTO> wheels = wheelsService.findAll(typeFilter, sizeFilter);
+        CustomResponse<List<WheelsDTO>> response = new CustomResponse<>("Data retrieved successfully.", wheels);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * for a more generic use, the actual WheelsEntity class wasnt used, but instead an instance of Class<?> , in order
+     *     for it to be used on other classes too.
+     */
+    private boolean checkFieldsExist(Class<?> entityClass, String... fieldNames) {
+        for (String fieldName : fieldNames) {
+            try {
+                entityClass.getDeclaredField(fieldName);//Use of Java reflections
+            } catch (NoSuchFieldException e) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @DeleteMapping("/delete/{id}")

@@ -15,4 +15,5 @@ public interface WheelsService {
     WheelsDTO findById(Integer id);
     WheelsDTO delete(Integer id);
     List<WheelsDTO> findAll(Filter...filters);
+
 }

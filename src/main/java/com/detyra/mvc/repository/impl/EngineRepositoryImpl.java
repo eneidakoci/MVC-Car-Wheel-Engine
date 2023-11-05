@@ -46,5 +46,6 @@ public class EngineRepositoryImpl implements EngineRepository {
         EngineEntity engineEntity = entityManager.merge(engine);
         entityManager.remove(engineEntity);
         return engine;
+
     }
 }
