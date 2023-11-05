@@ -32,13 +32,6 @@ public class WheelsController {
         return true;
     }
 
-    /*working */
-//    @GetMapping
-//    public ResponseEntity<List<WheelsDTO>> getAllWheels(@RequestParam(required = false) String type, @RequestParam(required = false) String size) {
-//        Filter typeFilter = new Filter("type", type, "=");
-//        Filter sizeFilter = new Filter("size", size, "=");
-//        return ResponseEntity.ok(wheelsService.findAll(typeFilter, sizeFilter));
-//    }
     @GetMapping
     public ResponseEntity<CustomResponse<List<WheelsDTO>>> getAllWheels(@RequestParam(required = false) String type, @RequestParam(required = false) String size) {
         boolean fieldsExist = checkFieldsExist(WheelsEntity.class, "size", "type");
