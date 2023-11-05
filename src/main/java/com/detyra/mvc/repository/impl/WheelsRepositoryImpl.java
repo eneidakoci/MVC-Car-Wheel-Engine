@@ -49,29 +49,10 @@ public class WheelsRepositoryImpl implements WheelsRepository {
         return wheels;
     }
 
-    /***************************Unfinished method, working only "=" operator**************************/
-//        @Override
-//    public List<WheelsEntity> findAll(Filter... filters) {
-//        StringBuilder jpqlQuery = new StringBuilder("SELECT w FROM WheelsEntity w WHERE 1=1");//Using StringBuilder since String created some issues
-//        for (Filter filter : filters) {
-//            if (filter.getValue() != null) {
-//                jpqlQuery.append(" AND w.").append(filter.getField()).append(" ").append(filter.getOperator()).append(" :").append(filter.getField());
-//            }
-//        }
-//        Query query = entityManager.createQuery(jpqlQuery.toString(), WheelsEntity.class);
-//
-//        for (Filter filter : filters) {
-//            if (filter.getValue() != null) {
-//                query.setParameter(filter.getField(), filter.getValue());
-//            }
-//        }
-//        return query.getResultList();
-// }
-
     /**
      * this method finds all the records that are being searched
      * it only works when the user has inputted the "=" operator
-     * when the user has inputted a different operator, it will return an empty list.
+     * when the user has inputted a different operator, it will return an empty list and an error message.
      */
     @Override
     public List<WheelsEntity> findAll(Filter... filters) {
